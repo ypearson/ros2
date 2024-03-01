@@ -1,0 +1,96 @@
+## Notes
+
+sudo snap install code --classic
+
+source /opt/ros/humble/setup.bash
+source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
+source install/setup.bash
+
+ros2 run demo_nodes_cpp talker
+ros2 run demo_nodes_cpp listener
+
+rqt_graph
+
+ros2 run turtlesim turtlesim_node
+ros2 run turtlesim turtle_teleop_key
+
+sudo apt-get install python3-colcon-common-extensions
+
+mkdir -p ros2_ws/src
+
+cd ros2_ws
+
+colcon build
+
+> build  install  log  src
+
+source install/setup.bash
+
+cd ros2_ws/src/
+
+ros2 pkg create my_robot_controller --build-type ament_python --dependencies rclpy
+
+~/github/ros2/ros2_ws$ colcon build
+
+Starting >>> my_robot_controller
+--- stderr: my_robot_controller
+/usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated.
+
+Use build and pip and other standards-based tools.
+  warnings.warn(
+---
+Finished <<< my_robot_controller [0.68s]
+
+Summary: 1 package finished [1.21s]
+  1 package had stderr output: my_robot_controller
+
+
+pip list | grep setuptools
+setuptools                               59.6.0
+
+pip install setuptools==58.2.0 # Downgrade to fix warning
+
+ypearson@ypearson-XPS-9320:~/github/ros2/ros2_ws$ colcon build
+Starting >>> my_robot_controller
+Finished <<< my_robot_controller [0.68s]
+
+Summary: 1 package finished [1.17s]
+
+ros2 run  my_robot_controller test_node
+
+# Don't need to re-build to get lastest python changes
+
+# Build
+~/ros2_ws$ colcon build --symlink-install
+
+# Source setup env
+source /opt/ros/humble/setup.bash
+source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
+source install/setup.bash
+
+# Run test node
+ros2 run  my_robot_controller test_node
+
+ros2 node list
+
+ros2 topic list
+
+ros2 topic info /chatter
+ros2 topic info /turtle1/cmd_vel
+
+ros2 interface show geometry_msgs/msg/Twist
+
+# This expresses velocity in free space broken into its linear and angular parts.
+Vector3  linear
+	float64 x
+	float64 y
+	float64 z
+Vector3  angular
+	float64 x
+	float64 y
+	float64 z
+
+https://www.youtube.com/watch?v=Yy4OgGwEAj8&list=PLLSegLrePWgJudpPUof4-nVFHGkB62Izy&index=7
+
+
+
