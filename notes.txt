@@ -1,35 +1,45 @@
-## Notes
+## ROS2 Notes
 
 sudo snap install code --classic
 
-source /opt/ros/humble/setup.bash
-source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
-source install/setup.bash
+# Source scripts
+source /opt/ros/humble/setup.bash # 1/3
+source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash # 2/3
+source install/setup.bash # 3/3
 
+# Runing demos
 ros2 run demo_nodes_cpp talker
 ros2 run demo_nodes_cpp listener
 
+# See what nodes are online graphically
 rqt_graph
 
+# Turle demo
 ros2 run turtlesim turtlesim_node
 ros2 run turtlesim turtle_teleop_key
 
+# Required for colcon
 sudo apt-get install python3-colcon-common-extensions
 
+# make required folder `src`
 mkdir -p ros2_ws/src
 
 cd ros2_ws
 
+# Build project
 colcon build
 
+# This folders are created after build
 > build  install  log  src
 
+# Yet another source script to run
 source install/setup.bash
 
+# Create a ROS package
 cd ros2_ws/src/
-
 ros2 pkg create my_robot_controller --build-type ament_python --dependencies rclpy
 
+# Build package, warning may appear
 ~/github/ros2/ros2_ws$ colcon build
 
 Starting >>> my_robot_controller
@@ -44,23 +54,26 @@ Finished <<< my_robot_controller [0.68s]
 Summary: 1 package finished [1.21s]
   1 package had stderr output: my_robot_controller
 
-
+# Downgrade to fix warning
 pip list | grep setuptools
 setuptools                               59.6.0
+pip install setuptools==58.2.0
 
-pip install setuptools==58.2.0 # Downgrade to fix warning
-
+# Build now has no warnings
 ypearson@ypearson-XPS-9320:~/github/ros2/ros2_ws$ colcon build
 Starting >>> my_robot_controller
 Finished <<< my_robot_controller [0.68s]
 
 Summary: 1 package finished [1.17s]
 
-ros2 run  my_robot_controller test_node
+ros2 run my_robot_controller test_node
 
-# Don't need to re-build to get lastest python changes
+ros2 				# command-line tool for ROS 2
+run 				# run a package specific executable
+my_robot_controller # Package name
+test_node			# entry_point, see ros2_ws/src/my_robot_controller/setup.py
 
-# Build
+# Build, don't need to re-build to get lastest python changes
 ~/ros2_ws$ colcon build --symlink-install
 
 # Source setup env
@@ -71,13 +84,14 @@ source install/setup.bash
 # Run test node
 ros2 run  my_robot_controller test_node
 
+# Various ros2 commands
+
 ros2 node list
-
 ros2 topic list
-
 ros2 topic info /chatter
 ros2 topic info /turtle1/cmd_vel
 
+ros2 interface show std_msgs/msg/String
 ros2 interface show geometry_msgs/msg/Twist
 
 # This expresses velocity in free space broken into its linear and angular parts.
@@ -90,7 +104,46 @@ Vector3  angular
 	float64 y
 	float64 z
 
-https://www.youtube.com/watch?v=Yy4OgGwEAj8&list=PLLSegLrePWgJudpPUof4-nVFHGkB62Izy&index=7
+# To get Twist message
+from geometry_msgs.msg import Twist
+
+# Add dependency to `package.xml`
+
+`<depend>geometry_msgs</depend>`
+
+# Listen to topic on command line
+
+ros2 topic echo /turtle1/pose
+
+# Information on pose topic
+ros2 topic info /turtle1/pose
+
+# Services
+
+ros2 run demo_nodes_cpp add_two_ints_server
+ros2 service list
+ros2 service type /add_two_ints
+ros2 interface show example_interfaces/srv/AddTwoInts
+
+int64 a
+int64 b
+---
+int64 sum
+
+ros2 service call  /add_two_ints example_interfaces/srv/AddTwoInts "{'a':2,'b':5}"
+
+ros2 service type /turtle1/set_pen
+ros2 interface show turtlesim/srv/SetPen
+
+uint8 r
+uint8 g
+uint8 b
+uint8 width
+uint8 off
+---
+
+# Get frequency of publications on a topic
+ros2 topic hz /turtle1/pos
 
 
 

@@ -20,7 +20,12 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            f'test_node = {package_name}.my_first_node:main'
+            f'test_node = {package_name}.my_first_node:main',
+            f'draw_circle = {package_name}.draw_circle:main',
+            f'pose_subscriber = {package_name}.pose_subscriber:main',
+            f'turtle_controller = {package_name}.turtle_controller:main',
         ],
     },
 )
+
+# executable_name = package_name.file_name.main_function
